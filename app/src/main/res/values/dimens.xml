@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="recycler_card_m_top">130dp</dimen>
+    <dimen name="m_x">30dp</dimen>
+    <dimen name="task_card_m">20dp</dimen>
+    <dimen name="task_card_p">10dp</dimen>
+    <dimen name="card_height">65dp</dimen>
+    <dimen name="large_text">18sp</dimen>
+    <dimen name="small_text">14sp</dimen>
+    <dimen name="medium_text">16sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>
