@@ -16,15 +16,17 @@ import todo.app.databinding.TextRowItemBinding
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
+*   August 3, 2024:
+*       * Refactored to match the updated ToDoTask data class
 */
 
 class ToDoTaskHolder(private val binding: TextRowItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(toDoTask: ToDoTask) {
-        binding.taskName.text = toDoTask.task
-        binding.taskTime.text = toDoTask.deadline
-        binding.taskDescription.text = toDoTask.description
+        binding.taskName.text = toDoTask.name
+        binding.taskTime.text = toDoTask.dueDate.toString()
+        binding.taskDescription.text = toDoTask.notes
 
         // Show the description if it was hidden, or hide it if it was visible
         binding.taskNotes.setOnClickListener {

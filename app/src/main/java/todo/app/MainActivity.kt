@@ -2,12 +2,12 @@ package todo.app
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import todo.app.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 /*
 * MainActivity.kt
@@ -19,6 +19,8 @@ import todo.app.databinding.ActivityMainBinding
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
+*   August 3, 2024:
+*       * Refactored to match the updated ToDoTask data class
 */
 
 class MainActivity : AppCompatActivity() {
@@ -26,11 +28,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ToDoTaskViewModel by viewModels()
 
+    private lateinit var auth: FirebaseAuth
     private lateinit var dataManager: DataManager
 
     private val adapter = Adapter { toDoTask: ToDoTask ->
         val intent = Intent(this, DetailsActivity::class.java).apply {
-            putExtra("tvShowId", toDoTask.task)
+            putExtra("toDoTaskId", toDoTask.id)
         }
         startActivity(intent)
     }
@@ -40,7 +43,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        enableEdgeToEdge()
+        // Initialise Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
+        // Initialise Firestore and DataManager
+        FirebaseFirestore.setLoggingEnabled(true)
 
         dataManager = DataManager.instance()
 

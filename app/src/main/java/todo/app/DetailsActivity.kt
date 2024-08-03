@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import todo.app.databinding.ActivityDetailsBinding
 
 /*
@@ -22,6 +23,7 @@ class DetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailsBinding
     private val viewModel: ToDoTaskViewModel by viewModels()
 
+    private lateinit var auth: FirebaseAuth
     private lateinit var dataManager: DataManager
 
     private var toDoTaskId: String? = null
@@ -32,6 +34,8 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dataManager = DataManager.instance()
+
+        auth = FirebaseAuth.getInstance()
 
         // Saves from one screen to another
         toDoTaskId = intent.getStringExtra("toDoTaskId")

@@ -10,16 +10,33 @@ package todo.app
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
+*
+*   August 3, 2024:
+*       * Refactored the ToDoTask data class to include different values
 */
 
-class ToDoTask {
-    val task: String
-    val deadline: String
-    val description: String
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentId
+import com.google.firebase.firestore.IgnoreExtraProperties
 
-    constructor(task: String, deadline: String, description: String) {
-        this.task = task
-        this.deadline = deadline
-        this.description = description
-    }
-}
+@IgnoreExtraProperties
+data class ToDoTask(
+    @DocumentId val id: String = "",
+    val name : String,
+    val notes : String,
+    val dueDate : Timestamp? = null,
+    val isCompleted : Boolean,
+    val hasDueDate : Boolean
+)
+
+//class ToDoTask {
+//    val task: String
+//    val deadline: String
+//    val description: String
+//
+//    constructor(task: String, deadline: String, description: String) {
+//        this.task = task
+//        this.deadline = deadline
+//        this.description = description
+//    }
+//}

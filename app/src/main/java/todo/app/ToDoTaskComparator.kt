@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.DiffUtil
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
+*   August 3, 2024:
+*       * Refactored to match the updated ToDoTask data class
 */
 
 class ToDoTaskComparator: DiffUtil.ItemCallback<ToDoTask>() {
     // Checks if two items represent the same entity by comparing IDs
     override fun areItemsTheSame(oldItem: ToDoTask, newItem: ToDoTask): Boolean {
-        return oldItem.task == newItem.task
+        return oldItem.id == newItem.id
     }
 
     // Checks if the contents of the items are the same by comparing the properties
