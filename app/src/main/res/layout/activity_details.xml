@@ -67,26 +67,26 @@
                             android:id="@+id/task_name_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Task Name"
+                            android:height="48dp"
+                            android:hint="@string/task"
                             android:textSize="@dimen/large_text"
-                            android:textStyle="bold"
-                            android:height="48dp"/>
+                            android:textStyle="bold" />
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/task_deadline_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Month Day, Year 12:00AM"
-                            android:textSize="@dimen/small_text"
-                            android:height="48dp"/>
+                            android:height="48dp"
+                            android:hint="Month Day, Year 12:00AM"
+                            android:textSize="@dimen/small_text" />
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/task_description_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Description..."
-                            android:textSize="@dimen/medium_text"
-                            android:height="48dp"/>
+                            android:height="48dp"
+                            android:hint="@string/description"
+                            android:textSize="@dimen/medium_text" />
                     </LinearLayout>
 
                     <CheckBox
@@ -123,6 +123,19 @@
         android:textStyle="italic"
         app:layout_constraintTop_toBottomOf="@id/toDoLabel"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/saveButton"
+        style="@style/FAB"
+        android:contentDescription="@string/delete_a_task"
+        app:backgroundTint="@color/green_blue"
+        app:layout_constraintBottom_toTopOf="@id/cardView"
+        app:layout_constraintEnd_toEndOf="@id/cardView"
+        app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+        app:shapeAppearance="@style/ThemeOverlay.Material3.FloatingActionButton.Primary"
+        app:srcCompat="@android:drawable/ic_menu_save"
+        app:tint="@color/black"
+        app:useCompatPadding="false" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/editButton"

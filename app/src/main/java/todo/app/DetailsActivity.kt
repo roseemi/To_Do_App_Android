@@ -8,7 +8,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.type.DateTime
 import todo.app.databinding.ActivityDetailsBinding
+import java.util.Calendar
 import java.util.UUID
 
 /*
@@ -53,6 +55,7 @@ class DetailsActivity : AppCompatActivity() {
         else
         {
             binding.deleteButton.visibility = View.GONE
+            binding.editButton.visibility = View.GONE
         }
 
         // Observe the LiveData from the ViewModel to update the UI
@@ -64,7 +67,17 @@ class DetailsActivity : AppCompatActivity() {
             }
         }
 
+        binding.calendarView.setOnDateChangeListener{ _, year, month, dayOfMonth ->
+            binding.calendarView.date = Calendar.getInstance()
+                .apply { set(year, month, dayOfMonth) }
+                .timeInMillis
+        }
+
         binding.editButton.setOnClickListener {
+            if(auth.currentUser != null) saveToDoTask()
+        }
+
+        binding.saveButton.setOnClickListener {
             if(auth.currentUser != null) saveToDoTask()
         }
 
@@ -78,10 +91,10 @@ class DetailsActivity : AppCompatActivity() {
     }
     private fun saveToDoTask()
     {
-        val name = binding.taskNameDetails.text.toString()
-        val description = binding.taskDescriptionDetails.text.toString()
-        val deadline = binding.calendarView.date
-
+//        val name = binding.taskNameDetails.text.toString()
+//        val description = binding.taskDescriptionDetails.text.toString()
+//        val deadline = binding.calendarView.date
+//
 //        if(name.isNotEmpty() && description.isNotEmpty())
 //        {
 //            if(name.isNotEmpty() && description.isNotEmpty()) {
@@ -89,7 +102,7 @@ class DetailsActivity : AppCompatActivity() {
 //                    id = toDoTaskId ?: UUID.randomUUID().toString(),
 //                    name = name,
 //                    notes = description,
-//                    dueDate = deadline,
+//                    dueDate = DateTime(deadline),
 //                    hasDueDate = deadline.isNotBlank(),
 //                    isCompleted = deadline.)
 //                viewModel.saveToDoTask(tvShow)
