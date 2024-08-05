@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
+*   August 3, 2024:
+*       * Added CRUD functions for Firestore
 */
 
 class ToDoTaskViewModel : ViewModel() {
@@ -22,9 +24,35 @@ class ToDoTaskViewModel : ViewModel() {
     private val m_tasks = MutableLiveData<List<ToDoTask>>()
     val tasks: LiveData<List<ToDoTask>> get() = m_tasks
 
-    fun loadAllTasks() {
+    private val m_task = MutableLiveData<ToDoTask?>()
+    val tvShow: LiveData<ToDoTask?> get() = m_task
+
+    fun loadAllToDoTasks() {
         viewModelScope.launch {
-            m_tasks.value = dataManager.tasks.toList()
+            // m_tasks.value = dataManager.tasks.toList()
+            m_tasks.value = dataManager.getAllToDoTasks()
+        }
+    }
+
+    fun loadToDoTaskById(id: String) {
+        viewModelScope.launch {
+            m_task.value = dataManager.getToDoTaskById(id)
+        }
+    }
+    fun saveToDoTask(toDoTask: ToDoTask) {
+        viewModelScope.launch {
+            if (toDoTask.id.isEmpty()) {
+                dataManager.insert(toDoTask)
+            } else {
+                dataManager.update(toDoTask)
+            }
+            loadAllToDoTasks()
+        }
+    }
+    fun deleteToDoTask(toDoTask: ToDoTask) {
+        viewModelScope.launch {
+            dataManager.delete(toDoTask)
+            loadAllToDoTasks()
         }
     }
 }

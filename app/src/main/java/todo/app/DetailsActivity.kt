@@ -1,11 +1,15 @@
 package todo.app
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import todo.app.databinding.ActivityDetailsBinding
+import java.util.UUID
 
 /*
 * DetailsActivity.kt
@@ -17,6 +21,8 @@ import todo.app.databinding.ActivityDetailsBinding
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
+*   August 5, 2024:
+*       * Began adding CRUD capabilities
 */
 
 class DetailsActivity : AppCompatActivity() {
@@ -40,9 +46,80 @@ class DetailsActivity : AppCompatActivity() {
         // Saves from one screen to another
         toDoTaskId = intent.getStringExtra("toDoTaskId")
 
-        binding.toDoLabel.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+        if(toDoTaskId != null)
+        {
+            viewModel.loadToDoTaskById(toDoTaskId!!)
+        }
+        else
+        {
+            binding.deleteButton.visibility = View.GONE
+        }
+
+        // Observe the LiveData from the ViewModel to update the UI
+        viewModel.tvShow.observe(this) { tvShow ->
+            tvShow?.let {
+                binding.taskNameDetails.setText(it.name)
+                binding.taskDescriptionDetails.setText(it.notes)
+                binding.taskDeadlineDetails.setText(it.dueDate.toString())
+            }
+        }
+
+        binding.editButton.setOnClickListener {
+            if(auth.currentUser != null) saveToDoTask()
+        }
+
+        binding.deleteButton.setOnClickListener {
+            if(auth.currentUser != null) deleteToDoTask()
+        }
+
+        binding.cancelButton.setOnClickListener {
+            finish()
+        }
+    }
+    private fun saveToDoTask()
+    {
+        val name = binding.taskNameDetails.text.toString()
+        val description = binding.taskDescriptionDetails.text.toString()
+        val deadline = binding.calendarView.date
+
+//        if(name.isNotEmpty() && description.isNotEmpty())
+//        {
+//            if(name.isNotEmpty() && description.isNotEmpty()) {
+//                val tvShow = ToDoTask(
+//                    id = toDoTaskId ?: UUID.randomUUID().toString(),
+//                    name = name,
+//                    notes = description,
+//                    dueDate = deadline,
+//                    hasDueDate = deadline.isNotBlank(),
+//                    isCompleted = deadline.)
+//                viewModel.saveToDoTask(tvShow)
+//                Toast.makeText(this, "Task Saved", Toast.LENGTH_SHORT).show()
+//                finish()    // Takes us back to the previous activity
+//            }
+//            else {
+//                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_LONG).show()
+//            }
+//        }
+//        else
+//        {
+//            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+//        }
+    }
+
+    private fun deleteToDoTask() {
+        toDoTaskId?.let { id ->
+            AlertDialog.Builder(this)
+                .setTitle("Delete Task")
+                .setMessage("Are you sure you want to delete this Task?")
+                .setPositiveButton("Yes") { _, _ ->
+                    viewModel.tvShow.value?.let {
+                        viewModel.deleteToDoTask(it)
+                        Toast.makeText(this, "Task Deleted", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
     }
 }

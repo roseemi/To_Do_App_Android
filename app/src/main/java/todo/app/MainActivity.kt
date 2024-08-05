@@ -59,10 +59,10 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(toDoTasks)
         }
 
-        viewModel.loadAllTasks()
+        viewModel.loadAllToDoTasks()
 
-        // Temporary button to see details page!
-        binding.toDoLabel.setOnClickListener {
+        // Let the user add a new entry
+        binding.addButton.setOnClickListener {
             val intent = Intent(this, DetailsActivity::class.java)
             startActivity(intent)
         }

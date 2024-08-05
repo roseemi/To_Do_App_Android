@@ -10,7 +10,6 @@ package todo.app
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
-*
 *   August 3, 2024:
 *       * Refactored the ToDoTask data class to include different values
 */
@@ -18,25 +17,14 @@ package todo.app
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.IgnoreExtraProperties
+import com.google.type.DateTime
 
 @IgnoreExtraProperties
 data class ToDoTask(
     @DocumentId val id: String = "",
     val name : String,
     val notes : String,
-    val dueDate : Timestamp? = null,
+    val dueDate : DateTime? = null,
     val isCompleted : Boolean,
     val hasDueDate : Boolean
 )
-
-//class ToDoTask {
-//    val task: String
-//    val deadline: String
-//    val description: String
-//
-//    constructor(task: String, deadline: String, description: String) {
-//        this.task = task
-//        this.deadline = deadline
-//        this.description = description
-//    }
-//}

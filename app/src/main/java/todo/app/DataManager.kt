@@ -18,6 +18,8 @@ import java.util.Date
 * Version history:
 *   June 26, 2024:
 *       * Initialised project
+*   August 3, 2024:
+*       * Added CRUD functions for Firestore
 */
 
 class DataManager private constructor() {
@@ -87,12 +89,4 @@ class DataManager private constructor() {
             null
         }
     }
-
-    val tasks = arrayOf(
-        ToDoTask("1", "Laundry", "Clean bedsheets and clothing.",
-            Timestamp(Date(2024, 7, 14)), false, true),
-        ToDoTask("2","Dishes", "", null, false, false),
-        ToDoTask("3","Homework", "Finish assignment 3!!",
-            Timestamp(Date(2024, 17, 14)),false, true)
-    )
 }

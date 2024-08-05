@@ -63,27 +63,30 @@
                         app:layout_constraintEnd_toStartOf="@+id/checkBox"
                         app:layout_constraintStart_toStartOf="parent">
 
-                        <TextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/task_name_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Task Name"
                             android:textSize="@dimen/large_text"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:height="48dp"/>
 
-                        <TextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/task_deadline_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Month Day, Year 12:00AM"
-                            android:textSize="@dimen/small_text" />
+                            android:textSize="@dimen/small_text"
+                            android:height="48dp"/>
 
-                        <TextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/task_description_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Description..."
-                            android:textSize="@dimen/medium_text" />
+                            android:textSize="@dimen/medium_text"
+                            android:height="48dp"/>
                     </LinearLayout>
 
                     <CheckBox

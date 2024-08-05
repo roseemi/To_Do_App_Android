@@ -6,7 +6,7 @@
     <dimen name="task_card_p">10dp</dimen>
     <dimen name="card_height">65dp</dimen>
     <dimen name="large_text">18sp</dimen>
-    <dimen name="small_text">14sp</dimen>
+    <dimen name="small_text">12sp</dimen>
     <dimen name="medium_text">16sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 </resources>
