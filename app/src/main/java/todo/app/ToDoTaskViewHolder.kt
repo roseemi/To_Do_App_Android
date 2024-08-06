@@ -16,16 +16,15 @@ import java.util.Date
 * tasks and track what needs to be done. Users can click on tasks to see/edit details of said task.
 *
 * Version history:
-*   June 26, 2024:
+*   July 26, 2024:
 *       * Initialised project
 *   August 3, 2024:
 *       * Refactored to match the updated ToDoTask data class
 */
 
-class ToDoTaskHolder(private val binding: TextRowItemBinding):
+class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
-        var isClicked = false
     fun bind(toDoTask: ToDoTask) {
         binding.taskName.text = toDoTask.name
         binding.taskTime.text = Date(toDoTask.dueDate).toString()
@@ -52,11 +51,12 @@ class ToDoTaskHolder(private val binding: TextRowItemBinding):
             }
         }
 
+        // Open the details page when the edit button is clicked
         binding.editButton.setOnClickListener {
-            val intent = Intent(this, DetailsActivity::class.java)
-            startActivity(intent)
-
-            isClicked = !isClicked
+            val intent = Intent(itemView.context, DetailsActivity::class.java).apply {
+                putExtra("toDoTaskId", toDoTask.id)
+            }
+            itemView.context.startActivity(intent)
         }
     }
 }

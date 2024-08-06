@@ -2,6 +2,7 @@ package todo.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 * tasks and track what needs to be done. Users can click on tasks to see/edit details of said task.
 *
 * Version history:
-*   June 26, 2024:
+*   July 26, 2024:
 *       * Initialised project
 *   August 3, 2024:
 *       * Refactored to match the updated ToDoTask data class
@@ -31,12 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var dataManager: DataManager
 
-    private val adapter = Adapter { toDoTask: ToDoTask ->
-        val intent = Intent(this, DetailsActivity::class.java).apply {
-            putExtra("toDoTaskId", toDoTask.id)
-        }
-        startActivity(intent)
-    }
+    private val adapter = ToDoTaskListAdapter {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +62,5 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, DetailsActivity::class.java)
             startActivity(intent)
         }
-
     }
 }

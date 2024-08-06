@@ -1,32 +1,34 @@
 package todo.app
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import todo.app.databinding.TextRowItemBinding
 
 /*
-* Adapter.kt
+* ToDoTaskListAdapter.kt
 * Author: Emily Rose
 * ID: 200553504
 * Description: This is a to-do application using Firebase as the database. Users can input their
 * tasks and track what needs to be done. Users can click on tasks to see/edit details of said task.
 *
 * Version history:
-*   June 26, 2024:
+*   July 26, 2024:
 *       * Initialised project
 */
 
 // A control class and a wrapper for the first RecyclerView
-class Adapter(private val onItemClicked: (ToDoTask) -> Unit) :
+class ToDoTaskListAdapter(private val onItemClicked: (ToDoTask) -> Unit):
+    ListAdapter<ToDoTask, ToDoTaskViewHolder>(ToDoTaskComparator()) {
 
-    ListAdapter<ToDoTask, ToDoTaskHolder>(ToDoTaskComparator()) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoTaskHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoTaskViewHolder {
         val binding = TextRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ToDoTaskHolder(binding)
+        return ToDoTaskViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ToDoTaskHolder, position: Int) {
+    override fun onBindViewHolder(holder: ToDoTaskViewHolder, position: Int) {
         val current = getItem(position)
 
         holder.bind(current)

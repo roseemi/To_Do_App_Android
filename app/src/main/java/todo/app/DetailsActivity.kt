@@ -66,7 +66,7 @@ class DetailsActivity : AppCompatActivity() {
             toDoTask?.let {
                 binding.taskNameDetails.setText(it.name)
                 binding.taskDescriptionDetails.setText(it.notes)
-                binding.taskDeadlineDetails.setText(it.dueDate.toString())
+                binding.taskDeadlineDetails.setText(Date(it.dueDate).toString())
             }
         }
 
