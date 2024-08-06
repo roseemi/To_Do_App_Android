@@ -1,10 +1,12 @@
 package todo.app
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import todo.app.databinding.TextRowItemBinding
+import java.util.Date
 
 /*
 * ToDoTaskHolder.kt
@@ -23,9 +25,10 @@ import todo.app.databinding.TextRowItemBinding
 class ToDoTaskHolder(private val binding: TextRowItemBinding):
     RecyclerView.ViewHolder(binding.root) {
 
+        var isClicked = false
     fun bind(toDoTask: ToDoTask) {
         binding.taskName.text = toDoTask.name
-        binding.taskTime.text = toDoTask.dueDate.toString()
+        binding.taskTime.text = Date(toDoTask.dueDate).toString()
         binding.taskDescription.text = toDoTask.notes
 
         // Show the description if it was hidden, or hide it if it was visible
@@ -47,6 +50,13 @@ class ToDoTaskHolder(private val binding: TextRowItemBinding):
             else {
                 binding.taskCard.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#F8FFE5")))
             }
+        }
+
+        binding.editButton.setOnClickListener {
+            val intent = Intent(this, DetailsActivity::class.java)
+            startActivity(intent)
+
+            isClicked = !isClicked
         }
     }
 }
