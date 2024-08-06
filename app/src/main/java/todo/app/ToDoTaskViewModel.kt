@@ -1,6 +1,5 @@
 package todo.app
 
-import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 

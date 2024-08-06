@@ -1,7 +1,6 @@
 package todo.app
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -58,7 +57,7 @@ class DetailsActivity : AppCompatActivity() {
         else
         {
             binding.deleteButton.visibility = View.GONE
-            binding.editButton.visibility = View.GONE
+
         }
 
         // Observe the LiveData from the ViewModel to update the UI
@@ -66,7 +65,8 @@ class DetailsActivity : AppCompatActivity() {
             toDoTask?.let {
                 binding.taskNameDetails.setText(it.name)
                 binding.taskDescriptionDetails.setText(it.notes)
-                binding.taskDeadlineDetails.setText(Date(it.dueDate).toString())
+                if(it.dueDate != 0L) binding.taskDeadlineDetails.setText(Utilities.formatDate(it.dueDate))
+                if(it.dueDate != 0L) binding.calendarView.setDate(it.dueDate)
             }
         }
 
@@ -78,11 +78,7 @@ class DetailsActivity : AppCompatActivity() {
                 .timeInMillis
             // Save that date as a variable
             selectedDate =  binding.calendarView.date
-            Log.i("calendar", Date(selectedDate).toString())
-        }
-
-        binding.editButton.setOnClickListener {
-            saveToDoTask()
+            binding.taskDeadlineDetails.setText(Utilities.formatDate(selectedDate))
         }
 
         binding.saveButton.setOnClickListener {
@@ -97,10 +93,12 @@ class DetailsActivity : AppCompatActivity() {
             finish()
         }
     }
+
     private fun saveToDoTask()
     {
         val name = binding.taskNameDetails.text.toString()
         val description = binding.taskDescriptionDetails.text.toString()
+        val dueDate = binding.taskDeadlineDetails.text.toString()
         val completed = binding.checkBox.isActivated
 
         if(name.isNotEmpty() && description.isNotEmpty())
@@ -110,8 +108,8 @@ class DetailsActivity : AppCompatActivity() {
                     id = toDoTaskId ?: UUID.randomUUID().toString(),
                     name = name,
                     notes = description,
-                    dueDate = selectedDate,
-                    hasDueDate = Date(selectedDate).after(Date(0L)),
+                    dueDate = if(dueDate.isEmpty()) 0L else selectedDate,
+                    hasDueDate = dueDate.isNotEmpty(),
                     isCompleted = completed
                 )
                 viewModel.saveToDoTask(toDoTask)

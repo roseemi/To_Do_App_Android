@@ -24,11 +24,12 @@ import java.util.Date
 
 class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
     RecyclerView.ViewHolder(binding.root) {
+    private lateinit var dataManager: DataManager
 
     fun bind(toDoTask: ToDoTask) {
         binding.taskName.text = toDoTask.name
-        binding.taskTime.text = Date(toDoTask.dueDate).toString()
         binding.taskDescription.text = toDoTask.notes
+        if(toDoTask.dueDate != 0L) binding.taskTime.text = Utilities.formatDate(toDoTask.dueDate)
 
         // Show the description if it was hidden, or hide it if it was visible
         binding.taskNotes.setOnClickListener {
@@ -49,6 +50,7 @@ class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
             else {
                 binding.taskCard.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#F8FFE5")))
             }
+            // TODO: update checkbox in db
         }
 
         // Open the details page when the edit button is clicked

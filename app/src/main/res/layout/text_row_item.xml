@@ -35,7 +35,6 @@
                 android:id="@+id/taskName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/task"
                 android:textColor="@color/navy"
                 android:textSize="@dimen/large_text"
                 android:textStyle="bold" />
@@ -44,7 +43,6 @@
                 android:id="@+id/taskTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/deadline"
                 android:textColor="@color/navy"
                 android:textSize="@dimen/small_text" />
 
@@ -53,7 +51,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/task_card_p"
-                android:text="@string/description"
                 android:textColor="@color/navy"
                 android:textSize="@dimen/medium_text"
                 android:visibility="gone" />
