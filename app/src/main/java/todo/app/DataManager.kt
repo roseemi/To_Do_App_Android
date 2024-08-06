@@ -16,7 +16,7 @@ import java.util.Date
 * tasks and track what needs to be done. Users can click on tasks to see/edit details of said task.
 *
 * Version history:
-*   June 26, 2024:
+*   July 26, 2024:
 *       * Initialised project
 *   August 3, 2024:
 *       * Added CRUD functions for Firestore

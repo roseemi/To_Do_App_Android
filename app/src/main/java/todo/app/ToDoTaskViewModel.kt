@@ -1,5 +1,6 @@
 package todo.app
 
+import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 
@@ -11,7 +12,7 @@ import kotlinx.coroutines.launch
 * tasks and track what needs to be done. Users can click on tasks to see/edit details of said task.
 *
 * Version history:
-*   June 26, 2024:
+*   July 26, 2024:
 *       * Initialised project
 *   August 3, 2024:
 *       * Added CRUD functions for Firestore
@@ -25,11 +26,10 @@ class ToDoTaskViewModel : ViewModel() {
     val tasks: LiveData<List<ToDoTask>> get() = m_tasks
 
     private val m_task = MutableLiveData<ToDoTask?>()
-    val tvShow: LiveData<ToDoTask?> get() = m_task
+    val toDoTask: LiveData<ToDoTask?> get() = m_task
 
     fun loadAllToDoTasks() {
         viewModelScope.launch {
-            // m_tasks.value = dataManager.tasks.toList()
             m_tasks.value = dataManager.getAllToDoTasks()
         }
     }

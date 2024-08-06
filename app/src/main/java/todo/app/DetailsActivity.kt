@@ -1,16 +1,16 @@
 package todo.app
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.type.DateTime
 import todo.app.databinding.ActivityDetailsBinding
 import java.util.Calendar
+import java.util.Date
 import java.util.UUID
 
 /*
@@ -21,10 +21,12 @@ import java.util.UUID
 * tasks and track what needs to be done. Users can click on tasks to see/edit details of said task.
 *
 * Version history:
-*   June 26, 2024:
+*   July 26, 2024:
 *       * Initialised project
 *   August 5, 2024:
 *       * Began adding CRUD capabilities
+*   August 6, 2024:
+*       * Fixed date selection capabilities
 */
 
 class DetailsActivity : AppCompatActivity() {
@@ -35,6 +37,7 @@ class DetailsActivity : AppCompatActivity() {
     private lateinit var dataManager: DataManager
 
     private var toDoTaskId: String? = null
+    private var selectedDate: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,30 +62,35 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         // Observe the LiveData from the ViewModel to update the UI
-        viewModel.tvShow.observe(this) { tvShow ->
-            tvShow?.let {
+        viewModel.toDoTask.observe(this) { toDoTask ->
+            toDoTask?.let {
                 binding.taskNameDetails.setText(it.name)
                 binding.taskDescriptionDetails.setText(it.notes)
                 binding.taskDeadlineDetails.setText(it.dueDate.toString())
             }
         }
 
+        // Update the selected date every time a new date is clicked on the calendar
         binding.calendarView.setOnDateChangeListener{ _, year, month, dayOfMonth ->
+            // Change the view date to be equal to what was clicked
             binding.calendarView.date = Calendar.getInstance()
                 .apply { set(year, month, dayOfMonth) }
                 .timeInMillis
+            // Save that date as a variable
+            selectedDate =  binding.calendarView.date
+            Log.i("calendar", Date(selectedDate).toString())
         }
 
         binding.editButton.setOnClickListener {
-            if(auth.currentUser != null) saveToDoTask()
+            saveToDoTask()
         }
 
         binding.saveButton.setOnClickListener {
-            if(auth.currentUser != null) saveToDoTask()
+            saveToDoTask()
         }
 
         binding.deleteButton.setOnClickListener {
-            if(auth.currentUser != null) deleteToDoTask()
+            deleteToDoTask()
         }
 
         binding.cancelButton.setOnClickListener {
@@ -91,41 +99,42 @@ class DetailsActivity : AppCompatActivity() {
     }
     private fun saveToDoTask()
     {
-//        val name = binding.taskNameDetails.text.toString()
-//        val description = binding.taskDescriptionDetails.text.toString()
-//        val deadline = binding.calendarView.date
-//
-//        if(name.isNotEmpty() && description.isNotEmpty())
-//        {
-//            if(name.isNotEmpty() && description.isNotEmpty()) {
-//                val tvShow = ToDoTask(
-//                    id = toDoTaskId ?: UUID.randomUUID().toString(),
-//                    name = name,
-//                    notes = description,
-//                    dueDate = DateTime(deadline),
-//                    hasDueDate = deadline.isNotBlank(),
-//                    isCompleted = deadline.)
-//                viewModel.saveToDoTask(tvShow)
-//                Toast.makeText(this, "Task Saved", Toast.LENGTH_SHORT).show()
-//                finish()    // Takes us back to the previous activity
-//            }
-//            else {
-//                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_LONG).show()
-//            }
-//        }
-//        else
-//        {
-//            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
-//        }
+        val name = binding.taskNameDetails.text.toString()
+        val description = binding.taskDescriptionDetails.text.toString()
+        val completed = binding.checkBox.isActivated
+
+        if(name.isNotEmpty() && description.isNotEmpty())
+        {
+            if(name.isNotEmpty() && description.isNotEmpty()) {
+                val toDoTask = ToDoTask(
+                    id = toDoTaskId ?: UUID.randomUUID().toString(),
+                    name = name,
+                    notes = description,
+                    dueDate = selectedDate,
+                    hasDueDate = Date(selectedDate).after(Date(0L)),
+                    isCompleted = completed
+                )
+                viewModel.saveToDoTask(toDoTask)
+                Toast.makeText(this, "Task Saved", Toast.LENGTH_SHORT).show()
+                finish()    // Takes us back to the previous activity
+            }
+            else {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_LONG).show()
+            }
+        }
+        else
+        {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun deleteToDoTask() {
         toDoTaskId?.let { id ->
             AlertDialog.Builder(this)
                 .setTitle("Delete Task")
-                .setMessage("Are you sure you want to delete this Task?")
+                .setMessage("Are you sure you want to delete this task?")
                 .setPositiveButton("Yes") { _, _ ->
-                    viewModel.tvShow.value?.let {
+                    viewModel.toDoTask.value?.let {
                         viewModel.deleteToDoTask(it)
                         Toast.makeText(this, "Task Deleted", Toast.LENGTH_SHORT).show()
                         finish()
