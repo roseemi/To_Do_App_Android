@@ -4,9 +4,9 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.View
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import todo.app.databinding.TextRowItemBinding
-import java.util.Date
 
 /*
 * ToDoTaskHolder.kt
@@ -24,7 +24,6 @@ import java.util.Date
 
 class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
     RecyclerView.ViewHolder(binding.root) {
-    private lateinit var dataManager: DataManager
 
     fun bind(toDoTask: ToDoTask) {
         binding.taskName.text = toDoTask.name
@@ -45,12 +44,15 @@ class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
 
         binding.checkBox.setOnClickListener{
             if(binding.checkBox.isChecked) {
-                binding.taskCard.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#EEEEEE")))
+                binding.itemConstraintLayout.setBackgroundColor(Color.parseColor("#407DDE92"))
             }
             else {
-                binding.taskCard.setCardBackgroundColor(ColorStateList.valueOf(Color.parseColor("#F8FFE5")))
+                binding.itemConstraintLayout.setBackgroundColor(Color.parseColor("#F8FFE5"))
             }
-            // TODO: update checkbox in db
+
+            // Update the change in completion status whenever the checkmark is pressed
+            val updatedToDoTask = toDoTask.copy(isCompleted = !toDoTask.isCompleted)
+//            viewModel.saveToDoTask(updatedToDoTask)
         }
 
         // Open the details page when the edit button is clicked

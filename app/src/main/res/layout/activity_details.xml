@@ -42,6 +42,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/hasDueDateSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:paddingStart="@dimen/small_text"
+                android:paddingEnd="@dimen/small_text"
+                android:text="Has a due date:"
+                app:trackTint="@color/blue_faded" />
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

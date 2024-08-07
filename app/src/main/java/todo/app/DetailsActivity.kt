@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import todo.app.databinding.ActivityDetailsBinding
 import java.util.Calendar
-import java.util.Date
 import java.util.UUID
 
 /*
