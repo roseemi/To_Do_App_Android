@@ -24,7 +24,7 @@ data class ToDoTask(
     @DocumentId val id: String = "",
     val name : String,
     val notes : String,
-    val dueDate : Long,
+    val dueDate : Long?,
     val isCompleted : Boolean,
     val hasDueDate : Boolean
 )

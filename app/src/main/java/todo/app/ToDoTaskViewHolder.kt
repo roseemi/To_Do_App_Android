@@ -28,7 +28,7 @@ class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
     fun bind(toDoTask: ToDoTask) {
         binding.taskName.text = toDoTask.name
         binding.taskDescription.text = toDoTask.notes
-        if(toDoTask.dueDate != 0L) binding.taskTime.text = Utilities.formatDate(toDoTask.dueDate)
+        if(toDoTask.dueDate != null) binding.taskTime.text = Utilities.formatDate(toDoTask.dueDate)
 
         // Show the description if it was hidden, or hide it if it was visible
         binding.taskNotes.setOnClickListener {

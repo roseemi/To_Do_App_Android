@@ -1,6 +1,7 @@
 package todo.app
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import todo.app.databinding.ActivityDetailsBinding
 import java.util.Calendar
+import java.util.Date
 import java.util.UUID
 
 /*
@@ -25,6 +27,8 @@ import java.util.UUID
 *       * Began adding CRUD capabilities
 *   August 6, 2024:
 *       * Fixed date selection capabilities
+*   August 7, 2024:
+*       * Added date control and a "has due date" switch
 */
 
 class DetailsActivity : AppCompatActivity() {
@@ -46,6 +50,9 @@ class DetailsActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
+        val minDate = binding.calendarView.minDate
+        val maxDate = binding.calendarView.maxDate
+
         // Saves from one screen to another
         toDoTaskId = intent.getStringExtra("toDoTaskId")
 
@@ -64,8 +71,10 @@ class DetailsActivity : AppCompatActivity() {
             toDoTask?.let {
                 binding.taskNameDetails.setText(it.name)
                 binding.taskDescriptionDetails.setText(it.notes)
-                if(it.dueDate != 0L) binding.taskDeadlineDetails.setText(Utilities.formatDate(it.dueDate))
-                if(it.dueDate != 0L) binding.calendarView.setDate(it.dueDate)
+                binding.hasDueDateSwitch.isChecked = toDoTask.hasDueDate
+                if(it.dueDate != null) binding.taskDeadlineDetails.setText(Utilities.formatDate(it.dueDate))
+                if(it.dueDate != null) binding.calendarView.setDate(it.dueDate)
+                updateCalendar(minDate, maxDate, toDoTask)
             }
         }
 
@@ -78,6 +87,11 @@ class DetailsActivity : AppCompatActivity() {
             // Save that date as a variable
             selectedDate =  binding.calendarView.date
             binding.taskDeadlineDetails.setText(Utilities.formatDate(selectedDate))
+        }
+
+        // Clear the display date if no due date on the switch is selected
+        binding.hasDueDateSwitch.setOnClickListener {
+            if(!binding.hasDueDateSwitch.isChecked) binding.taskDeadlineDetails.text = null
         }
 
         binding.saveButton.setOnClickListener {
@@ -93,11 +107,25 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    // Disable or enable the calendar based on the status of the switch
+    private fun updateCalendar(minDate : Long, maxDate : Long, toDoTask : ToDoTask) {
+        if (!toDoTask.hasDueDate) {
+            // Only valid date will be today
+            binding.calendarView.minDate = System.currentTimeMillis()
+            binding.calendarView.maxDate = System.currentTimeMillis()
+        }
+        else {
+            binding.calendarView.minDate = minDate
+            binding.calendarView.maxDate = maxDate
+        }
+    }
+
     private fun saveToDoTask()
     {
         val name = binding.taskNameDetails.text.toString()
         val description = binding.taskDescriptionDetails.text.toString()
         val dueDate = binding.taskDeadlineDetails.text.toString()
+        val hasDueDate = binding.hasDueDateSwitch.isChecked
         val completed = binding.checkBox.isActivated
 
         if(name.isNotEmpty() && description.isNotEmpty())
@@ -107,8 +135,8 @@ class DetailsActivity : AppCompatActivity() {
                     id = toDoTaskId ?: UUID.randomUUID().toString(),
                     name = name,
                     notes = description,
-                    dueDate = if(dueDate.isEmpty()) 0L else selectedDate,
-                    hasDueDate = dueDate.isNotEmpty(),
+                    dueDate = if(dueDate.isEmpty()) null else selectedDate,
+                    hasDueDate = hasDueDate,
                     isCompleted = completed
                 )
                 viewModel.saveToDoTask(toDoTask)
