@@ -2,6 +2,7 @@ package todo.app
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -28,6 +29,7 @@ import java.util.UUID
 *       * Fixed date selection capabilities
 *   August 7, 2024:
 *       * Added date control and a "has due date" switch
+*       * Added dialogue for saving and canceling changes
 */
 
 class DetailsActivity : AppCompatActivity() {
@@ -37,8 +39,10 @@ class DetailsActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var dataManager: DataManager
 
+    // Management vars for task state
     private var toDoTaskId: String? = null
-    private var selectedDate: Long = 0L
+    private var selectedDate: Long? = null
+    private var defaultToDoTask: ToDoTask = ToDoTask()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +82,8 @@ class DetailsActivity : AppCompatActivity() {
                     binding.checkBox.isChecked = true
                 }
                 updateCalendar(minDate, maxDate, toDoTask)
+                selectedDate = it.dueDate
+                defaultToDoTask = toDoTask.copy()
             }
         }
 
@@ -89,7 +95,7 @@ class DetailsActivity : AppCompatActivity() {
                 .timeInMillis
             // Save that date as a variable
             selectedDate =  binding.calendarView.date
-            binding.taskDeadlineDetails.setText(Utilities.formatDate(selectedDate))
+            binding.taskDeadlineDetails.setText(Utilities.formatDate(selectedDate!!))
         }
 
         binding.checkBox.setOnClickListener{
@@ -115,7 +121,7 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         binding.cancelButton.setOnClickListener {
-            finish()
+            cancelChanges()
         }
     }
 
@@ -134,34 +140,48 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun saveToDoTask()
     {
-        val name = binding.taskNameDetails.text.toString()
-        val description = binding.taskDescriptionDetails.text.toString()
-        val dueDate = binding.taskDeadlineDetails.text.toString()
-        val hasDueDate = binding.hasDueDateSwitch.isChecked
-        val isCompleted = binding.checkBox.isChecked
+        toDoTaskId?.let {
+            AlertDialog.Builder(this)
+                .setTitle("Save Task")
+                .setMessage("Are you sure you want to save this task?")
+                .setPositiveButton("Yes") { _, _ ->
+                    viewModel.toDoTask.value?.let {
+                        val name = binding.taskNameDetails.text.toString()
+                        val description = binding.taskDescriptionDetails.text.toString()
 
-        if(name.isNotEmpty() && description.isNotEmpty())
-        {
-            if(name.isNotEmpty() && description.isNotEmpty()) {
-                val toDoTask = ToDoTask(
-                    id = toDoTaskId ?: UUID.randomUUID().toString(),
-                    name = name,
-                    notes = description,
-                    dueDate = if(dueDate.isEmpty()) null else selectedDate,
-                    hasDueDate = hasDueDate,
-                    completed = isCompleted
-                )
-                viewModel.saveToDoTask(toDoTask)
-                Toast.makeText(this, "Task Saved", Toast.LENGTH_SHORT).show()
-                finish()    // Takes us back to the previous activity
-            }
-            else {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_LONG).show()
-            }
-        }
-        else
-        {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                        if(name.isNotEmpty() && description.isNotEmpty())
+                        {
+                            if(name.isNotEmpty() && description.isNotEmpty()) {
+
+                                val updatedToDoTask = createUpdatedToDoTask()
+                                viewModel.saveToDoTask(updatedToDoTask)
+
+                                Toast.makeText(
+                                    this,
+                                    "Task Saved",
+                                    Toast.LENGTH_SHORT).show()
+
+                                finish()
+                            }
+                            else {
+                                Toast.makeText(
+                                    this,
+                                    "Please fill all fields",
+                                    Toast.LENGTH_LONG).show()
+                            }
+                        }
+                        else
+                        {
+                            Toast.makeText(
+                                this,
+                                "Please fill all fields",
+                                Toast.LENGTH_SHORT).show()
+                        }
+                        finish()
+                    }
+                }
+                .setNegativeButton("No", null)
+                .show()
         }
     }
 
@@ -180,5 +200,43 @@ class DetailsActivity : AppCompatActivity() {
                 .setNegativeButton("No", null)
                 .show()
         }
+    }
+
+    private fun cancelChanges() {
+        val ttoDoTask = createUpdatedToDoTask()
+
+        Log.i("newtasks", ttoDoTask.toString())
+        Log.i("newtasks", defaultToDoTask.toString())
+        Log.i("newtasks", (defaultToDoTask == ttoDoTask).toString())
+
+        if(defaultToDoTask != ttoDoTask) {
+            AlertDialog.Builder(this)
+                .setTitle("Cancel changes")
+                .setMessage("Are you sure you want to discard your changes?")
+                .setPositiveButton("Yes") { _, _ ->
+                    finish()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        }
+        else {
+            finish()
+        }
+    }
+
+    private fun createUpdatedToDoTask(): ToDoTask {
+        val name = binding.taskNameDetails.text.toString()
+        val description = binding.taskDescriptionDetails.text.toString()
+        val hasDueDate = binding.hasDueDateSwitch.isChecked
+        val isCompleted = binding.checkBox.isChecked
+
+        return ToDoTask(
+            id = toDoTaskId ?: UUID.randomUUID().toString(),
+            name = name,
+            notes = description,
+            dueDate = if (hasDueDate) selectedDate else null,
+            hasDueDate = hasDueDate,
+            completed = isCompleted
+        )
     }
 }

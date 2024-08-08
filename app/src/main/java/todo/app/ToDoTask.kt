@@ -24,10 +24,10 @@ data class ToDoTask(
     @DocumentId val id: String = "",
     val name : String,
     val notes : String,
-    val dueDate : Long?,
+    val dueDate : Long? = null,
     val completed : Boolean,
     val hasDueDate : Boolean
 )
 {
-    constructor() : this("", "", "",0L, false, false)
+    constructor() : this("", "", "",null, false, false)
 }
