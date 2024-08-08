@@ -1,7 +1,7 @@
 package todo.app
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import todo.app.databinding.ActivityDetailsBinding
 import java.util.Calendar
-import java.util.Date
 import java.util.UUID
 
 /*
@@ -74,6 +73,10 @@ class DetailsActivity : AppCompatActivity() {
                 binding.hasDueDateSwitch.isChecked = toDoTask.hasDueDate
                 if(it.dueDate != null) binding.taskDeadlineDetails.setText(Utilities.formatDate(it.dueDate))
                 if(it.dueDate != null) binding.calendarView.setDate(it.dueDate)
+                if(toDoTask.completed) {
+                    binding.detailsConstraintLayout.setBackgroundColor(Color.parseColor("#407DDE92"))
+                    binding.checkBox.isChecked = true
+                }
                 updateCalendar(minDate, maxDate, toDoTask)
             }
         }
@@ -87,6 +90,15 @@ class DetailsActivity : AppCompatActivity() {
             // Save that date as a variable
             selectedDate =  binding.calendarView.date
             binding.taskDeadlineDetails.setText(Utilities.formatDate(selectedDate))
+        }
+
+        binding.checkBox.setOnClickListener{
+            if(binding.checkBox.isChecked) {
+                binding.detailsConstraintLayout.setBackgroundColor(Color.parseColor("#407DDE92"))
+            }
+            else {
+                binding.detailsConstraintLayout.setBackgroundColor(Color.parseColor("#F8FFE5"))
+            }
         }
 
         // Clear the display date if no due date on the switch is selected
@@ -126,7 +138,7 @@ class DetailsActivity : AppCompatActivity() {
         val description = binding.taskDescriptionDetails.text.toString()
         val dueDate = binding.taskDeadlineDetails.text.toString()
         val hasDueDate = binding.hasDueDateSwitch.isChecked
-        val completed = binding.checkBox.isActivated
+        val isCompleted = binding.checkBox.isChecked
 
         if(name.isNotEmpty() && description.isNotEmpty())
         {
@@ -137,7 +149,7 @@ class DetailsActivity : AppCompatActivity() {
                     notes = description,
                     dueDate = if(dueDate.isEmpty()) null else selectedDate,
                     hasDueDate = hasDueDate,
-                    isCompleted = completed
+                    completed = isCompleted
                 )
                 viewModel.saveToDoTask(toDoTask)
                 Toast.makeText(this, "Task Saved", Toast.LENGTH_SHORT).show()

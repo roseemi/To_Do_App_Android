@@ -2,6 +2,7 @@ package todo.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,9 +22,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 *       * Initialised project
 *   August 3, 2024:
 *       * Refactored to match the updated ToDoTask data class
+*   August 8, 2024:
+*       * Created a listener interface to detect when/which recycler view items are clicked
 */
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnCheckboxClickedListener {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ToDoTaskViewModel by viewModels()
@@ -31,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var dataManager: DataManager
 
-    private val adapter = ToDoTaskListAdapter {}
+    private val adapter = ToDoTaskListAdapter(this) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,5 +69,12 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.loadAllToDoTasks()
+    }
+
+    // Update the change in completion status whenever the checkmark is pressed
+    override fun onCheckboxClicked(toDoTask: ToDoTask) {
+        val updatedToDoTask = toDoTask.copy(completed = !toDoTask.completed)
+        Log.i("updatedtask", updatedToDoTask.completed.toString())
+        viewModel.saveToDoTask(updatedToDoTask)
     }
 }

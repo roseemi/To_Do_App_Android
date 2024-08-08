@@ -17,15 +17,19 @@ import todo.app.databinding.TextRowItemBinding
 * Version history:
 *   July 26, 2024:
 *       * Initialised project
+*   August 8, 2024:
+*       * Created a listener interface to detect when/which recycler view items are clicked
 */
 
 // A control class and a wrapper for the first RecyclerView
-class ToDoTaskListAdapter(private val onItemClicked: (ToDoTask) -> Unit):
+class ToDoTaskListAdapter(
+    private val onCheckBoxClickedListener: OnCheckboxClickedListener,
+    private val onItemClicked: (ToDoTask) -> Unit):
     ListAdapter<ToDoTask, ToDoTaskViewHolder>(ToDoTaskComparator()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoTaskViewHolder {
         val binding = TextRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ToDoTaskViewHolder(binding)
+        return ToDoTaskViewHolder(binding, onCheckBoxClickedListener)
     }
 
     override fun onBindViewHolder(holder: ToDoTaskViewHolder, position: Int) {

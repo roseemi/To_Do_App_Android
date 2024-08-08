@@ -1,10 +1,9 @@
 package todo.app
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.View
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import todo.app.databinding.TextRowItemBinding
 
@@ -20,18 +19,25 @@ import todo.app.databinding.TextRowItemBinding
 *       * Initialised project
 *   August 3, 2024:
 *       * Refactored to match the updated ToDoTask data class
+*   August 8, 2024:
+*       * Created a listener interface to detect when/which recycler view items are clicked
 */
 
-class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
+class ToDoTaskViewHolder(private val binding: TextRowItemBinding,
+                         private val onCheckBoxClickedListener: OnCheckboxClickedListener):
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(toDoTask: ToDoTask) {
         binding.taskName.text = toDoTask.name
         binding.taskDescription.text = toDoTask.notes
         if(toDoTask.dueDate != null) binding.taskTime.text = Utilities.formatDate(toDoTask.dueDate)
+        if(toDoTask.completed) {
+            binding.itemConstraintLayout.setBackgroundColor(Color.parseColor("#407DDE92"))
+            binding.checkBox.isChecked = true
+        }
 
         // Show the description if it was hidden, or hide it if it was visible
-        binding.taskNotes.setOnClickListener {
+        binding.itemConstraintLayout.setOnClickListener {
             if(binding.taskDescription.visibility == View.VISIBLE) {
                 binding.taskDescription.visibility = View.GONE
                 binding.editButton.visibility = View.GONE
@@ -49,10 +55,7 @@ class ToDoTaskViewHolder(private val binding: TextRowItemBinding):
             else {
                 binding.itemConstraintLayout.setBackgroundColor(Color.parseColor("#F8FFE5"))
             }
-
-            // Update the change in completion status whenever the checkmark is pressed
-            val updatedToDoTask = toDoTask.copy(isCompleted = !toDoTask.isCompleted)
-//            viewModel.saveToDoTask(updatedToDoTask)
+            onCheckBoxClickedListener.onCheckboxClicked(toDoTask)
         }
 
         // Open the details page when the edit button is clicked

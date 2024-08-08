@@ -25,7 +25,7 @@ data class ToDoTask(
     val name : String,
     val notes : String,
     val dueDate : Long?,
-    val isCompleted : Boolean,
+    val completed : Boolean,
     val hasDueDate : Boolean
 )
 {
