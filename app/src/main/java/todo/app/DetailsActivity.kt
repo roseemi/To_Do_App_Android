@@ -2,7 +2,6 @@ package todo.app
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -98,6 +97,7 @@ class DetailsActivity : AppCompatActivity() {
             binding.taskDeadlineDetails.setText(Utilities.formatDate(selectedDate!!))
         }
 
+        // Change the background colour of the item based on the item's completion statue
         binding.checkBox.setOnClickListener{
             if(binding.checkBox.isChecked) {
                 binding.detailsConstraintLayout.setBackgroundColor(Color.parseColor("#407DDE92"))
@@ -138,6 +138,7 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    // Save task in the database
     private fun saveToDoTask()
     {
         toDoTaskId?.let {
@@ -185,6 +186,7 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    // Delete task in the database
     private fun deleteToDoTask() {
         toDoTaskId?.let { id ->
             AlertDialog.Builder(this)
@@ -202,12 +204,9 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    // Return to the previous activity
     private fun cancelChanges() {
         val ttoDoTask = createUpdatedToDoTask()
-
-        Log.i("newtasks", ttoDoTask.toString())
-        Log.i("newtasks", defaultToDoTask.toString())
-        Log.i("newtasks", (defaultToDoTask == ttoDoTask).toString())
 
         if(defaultToDoTask != ttoDoTask) {
             AlertDialog.Builder(this)
@@ -224,6 +223,7 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    // Bind the new properties to the task
     private fun createUpdatedToDoTask(): ToDoTask {
         val name = binding.taskNameDetails.text.toString()
         val description = binding.taskDescriptionDetails.text.toString()

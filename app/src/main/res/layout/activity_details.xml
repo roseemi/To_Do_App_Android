@@ -50,6 +50,7 @@
                 android:paddingStart="@dimen/small_text"
                 android:paddingEnd="@dimen/small_text"
                 android:text="Has a due date:"
+                app:showText="false"
                 app:trackTint="@color/blue_faded" />
 
             <androidx.cardview.widget.CardView
@@ -83,12 +84,11 @@
                             android:textSize="@dimen/large_text"
                             android:textStyle="bold" />
 
-                        <com.google.android.material.textfield.TextInputEditText
+                        <TextView
                             android:id="@+id/task_deadline_details"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:height="48dp"
-                            android:hint="Month Day, Year 12:00AM"
+                            android:hint="@string/default_date"
                             android:textSize="@dimen/small_text" />
 
                         <com.google.android.material.textfield.TextInputEditText

@@ -120,6 +120,7 @@ class MainActivity : AppCompatActivity(), OnCheckboxClickedListener {
         }
     }
 
+    // Runs when the app is reloaded from an inactive state
     override fun onResume() {
         super.onResume()
         viewModel.loadAllToDoTasks()

@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/green_blue</item>
         <item name="colorSecondary">@color/blue</item>
         <item name="colorPrimaryDark">@color/navy</item>
-        <item name="colorOnSurface">@color/blue</item>
+        <item name="colorOnSurface">@color/grey_blue</item>
     </style>
 
     <style name="Theme.ToDo" parent="Base.Theme.ToDo" />
