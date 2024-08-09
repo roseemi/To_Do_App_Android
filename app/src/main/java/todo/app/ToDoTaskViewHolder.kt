@@ -2,7 +2,6 @@ package todo.app
 
 import android.content.Intent
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import todo.app.databinding.TextRowItemBinding

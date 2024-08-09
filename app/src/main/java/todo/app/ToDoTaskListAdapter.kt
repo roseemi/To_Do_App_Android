@@ -1,9 +1,7 @@
 package todo.app
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.ListAdapter
 import todo.app.databinding.TextRowItemBinding
 
@@ -19,6 +17,8 @@ import todo.app.databinding.TextRowItemBinding
 *       * Initialised project
 *   August 8, 2024:
 *       * Created a listener interface to detect when/which recycler view items are clicked
+*   August 9, 2024:
+*       * Added a getter for the current task item
 */
 
 // A control class and a wrapper for the first RecyclerView
@@ -40,5 +40,9 @@ class ToDoTaskListAdapter(
         holder.itemView.setOnClickListener {
             onItemClicked(current)
         }
+    }
+
+    fun getItemAtPosition(position: Int): ToDoTask {
+        return getItem(position)
     }
 }
