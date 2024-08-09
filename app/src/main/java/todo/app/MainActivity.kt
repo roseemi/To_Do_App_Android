@@ -3,12 +3,16 @@ package todo.app
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import todo.app.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.math.abs
 
 /*
 * MainActivity.kt
@@ -26,10 +30,14 @@ import com.google.firebase.firestore.FirebaseFirestore
 *       * Created a listener interface to detect when/which recycler view items are clicked
 */
 
-class MainActivity : AppCompatActivity(), OnCheckboxClickedListener {
+class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener, OnCheckboxClickedListener {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: ToDoTaskViewModel by viewModels()
+
+    private lateinit var gestureDetector: GestureDetector
+    private val swipeThreshold = 100
+    private val swipeVelocityThreshold = 100
 
     private lateinit var auth: FirebaseAuth
     private lateinit var dataManager: DataManager
@@ -40,6 +48,9 @@ class MainActivity : AppCompatActivity(), OnCheckboxClickedListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        gestureDetector = GestureDetector(this)
+
 
         // Initialise Firebase Auth
         auth = FirebaseAuth.getInstance()
@@ -76,5 +87,66 @@ class MainActivity : AppCompatActivity(), OnCheckboxClickedListener {
         val updatedToDoTask = toDoTask.copy(completed = !toDoTask.completed)
         Log.i("updatedtask", updatedToDoTask.completed.toString())
         viewModel.saveToDoTask(updatedToDoTask)
+    }
+
+    // Recognise touch events
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        return if (gestureDetector.onTouchEvent(event)) {
+            true
+        }
+        else {
+            super.onTouchEvent(event)
+        }
+    }
+
+    override fun onDown(e: MotionEvent): Boolean {
+        return false
+    }
+
+    override fun onShowPress(e: MotionEvent) {
+        return
+    }
+
+    override fun onSingleTapUp(e: MotionEvent): Boolean {
+        return false
+    }
+
+    override fun onScroll(
+        e1: MotionEvent?,
+        e2: MotionEvent,
+        distanceX: Float,
+        distanceY: Float
+    ): Boolean {
+        return false
+    }
+
+    override fun onLongPress(e: MotionEvent) {
+        return
+    }
+
+    override fun onFling(
+        e1: MotionEvent?,
+        e2: MotionEvent,
+        velocityX: Float,
+        velocityY: Float
+    ): Boolean {
+        try {
+            val diffY = e2.y - (e1?.y ?: 0f)
+            val diffX = e2.x - (e1?.x ?: 0f)
+            if (abs(diffX) > abs(diffY)) {
+                if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
+                    if (diffX > 0) {
+                        Toast.makeText(this, "Left to Right swipe gesture", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        Toast.makeText(this, "Right to Left swipe gesture", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+        catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+        return true
     }
 }

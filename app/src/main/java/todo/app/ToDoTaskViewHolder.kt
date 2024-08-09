@@ -35,7 +35,6 @@ class ToDoTaskViewHolder(private val binding: TextRowItemBinding,
             binding.itemConstraintLayout.setBackgroundColor(Color.parseColor("#407DDE92"))
             binding.checkBox.isChecked = true
         }
-
         // Show the description if it was hidden, or hide it if it was visible
         binding.itemConstraintLayout.setOnClickListener {
             if(binding.taskDescription.visibility == View.VISIBLE) {
