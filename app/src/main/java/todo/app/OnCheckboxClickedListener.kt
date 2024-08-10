@@ -11,6 +11,7 @@ package todo.app
 *       * Created a listener interface to detect when/which recycler view items are clicked
 */
 
+// Source: https://www.youtube.com/watch?v=7GPUpvcU1FE
 interface OnCheckboxClickedListener {
     fun onCheckboxClicked(toDoTask: ToDoTask)
 }

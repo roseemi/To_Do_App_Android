@@ -29,7 +29,7 @@ class ToDoTaskViewHolder(private val binding: TextRowItemBinding,
     fun bind(toDoTask: ToDoTask) {
         binding.taskName.text = toDoTask.name
         binding.taskDescription.text = toDoTask.notes
-        if(toDoTask.dueDate != null) binding.taskTime.text = Utilities.formatDate(toDoTask.dueDate)
+        binding.taskTime.text = toDoTask.dueDate?.let { Utilities.formatDate(it) }
         if(toDoTask.completed) {
             binding.itemConstraintLayout.setBackgroundColor(Color.parseColor("#407DDE92"))
             binding.checkBox.isChecked = true

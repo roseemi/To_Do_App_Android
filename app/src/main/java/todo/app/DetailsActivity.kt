@@ -141,49 +141,34 @@ class DetailsActivity : AppCompatActivity() {
     // Save task in the database
     private fun saveToDoTask()
     {
-        toDoTaskId?.let {
-            AlertDialog.Builder(this)
-                .setTitle("Save Task")
-                .setMessage("Are you sure you want to save this task?")
-                .setPositiveButton("Yes") { _, _ ->
-                    viewModel.toDoTask.value?.let {
-                        val name = binding.taskNameDetails.text.toString()
-                        val description = binding.taskDescriptionDetails.text.toString()
+        AlertDialog.Builder(this)
+            .setTitle("Save Task")
+            .setMessage("Are you sure you want to save this task?")
+            .setPositiveButton("Yes") { _, _ ->
+                val name = binding.taskNameDetails.text.toString()
+                val description = binding.taskDescriptionDetails.text.toString()
 
-                        if(name.isNotEmpty() && description.isNotEmpty())
-                        {
-                            if(name.isNotEmpty() && description.isNotEmpty()) {
+                if(name.isNotEmpty() && description.isNotEmpty())
+                {
+                    val updatedToDoTask = createUpdatedToDoTask()
+                    viewModel.saveToDoTask(updatedToDoTask)
 
-                                val updatedToDoTask = createUpdatedToDoTask()
-                                viewModel.saveToDoTask(updatedToDoTask)
-
-                                Toast.makeText(
-                                    this,
-                                    "Task Saved",
-                                    Toast.LENGTH_SHORT).show()
-
-                                finish()
-                            }
-                            else {
-                                Toast.makeText(
-                                    this,
-                                    "Please fill all fields",
-                                    Toast.LENGTH_LONG).show()
-                            }
-                        }
-                        else
-                        {
-                            Toast.makeText(
-                                this,
-                                "Please fill all fields",
-                                Toast.LENGTH_SHORT).show()
-                        }
-                        finish()
-                    }
+                    Toast.makeText(
+                        this,
+                        "Task Saved",
+                        Toast.LENGTH_SHORT).show()
+                    finish()
                 }
-                .setNegativeButton("No", null)
-                .show()
-        }
+                else
+                {
+                    Toast.makeText(
+                        this,
+                        "Please fill all fields",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     // Delete task in the database

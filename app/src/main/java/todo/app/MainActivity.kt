@@ -2,7 +2,6 @@ package todo.app
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -129,7 +128,6 @@ class MainActivity : AppCompatActivity(), OnCheckboxClickedListener {
     // Update the change in completion status whenever the checkmark is pressed
     override fun onCheckboxClicked(toDoTask: ToDoTask) {
         val updatedToDoTask = toDoTask.copy(completed = !toDoTask.completed)
-        Log.i("updatedtask", updatedToDoTask.completed.toString())
         viewModel.saveToDoTask(updatedToDoTask)
     }
 }
